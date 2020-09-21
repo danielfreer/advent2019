@@ -18,7 +18,7 @@ private const val ADD = 1
 private const val MULTIPLY = 2
 private const val RETURN = 99
 
-tailrec fun execute(state: MutableList<Int>, index: Int): List<Int> {
+private tailrec fun execute(state: MutableList<Int>, index: Int): List<Int> {
     return when (val opCode = state[index]) {
         ADD -> {
             state[state[index + 3]] = state[state[index + 1]] + state[state[index + 2]]
@@ -35,7 +35,7 @@ tailrec fun execute(state: MutableList<Int>, index: Int): List<Int> {
 
 fun execute(program: List<Int>) = execute(program.toMutableList(), 0)
 
-fun executeWithReplacements(program: List<Int>, replacements: List<Pair<Int, Int>>): List<Int> {
+private fun executeWithReplacements(program: List<Int>, replacements: List<Pair<Int, Int>>): List<Int> {
     val mutableProgram = program.toMutableList()
     replacements.forEach { (index, value) ->
         mutableProgram[index] = value
@@ -43,7 +43,7 @@ fun executeWithReplacements(program: List<Int>, replacements: List<Pair<Int, Int
     return execute(mutableProgram, 0)
 }
 
-fun calculateNounVerb(condition: (Int, Int) -> Boolean): Pair<Int, Int> {
+private fun calculateNounVerb(condition: (Int, Int) -> Boolean): Pair<Int, Int> {
     (0..99).forEach { noun ->
         (0..99).forEach { verb ->
             if (condition(noun, verb)) return noun to verb
