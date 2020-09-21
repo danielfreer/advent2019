@@ -1,15 +1,22 @@
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTimedValue
+
+@ExperimentalTime
 fun main(vararg args: String) {
     val input = args.toList().ifEmpty { loadResource("day2.txt") }
     val program = input.flatMap { it.split(",") }.map(String::toInt)
 
-    val finalState = executeWithReplacements(program, listOf(1 to 12, 2 to 2))
-    println("Day 2 - Part 1 Solution")
+    val (finalState, firstDuration) = measureTimedValue { executeWithReplacements(program, listOf(1 to 12, 2 to 2)) }
+    println("Day 2 - Part 1 Solution took: $firstDuration")
     println("Value at position 0: ${finalState[0]}")
     println()
-    val (noun, verb) = calculateNounVerb { noun, verb ->
-        executeWithReplacements(program, listOf(1 to noun, 2 to verb))[0] == 19_690_720
+    val (pair, secondDuration) = measureTimedValue {
+        calculateNounVerb { noun, verb ->
+            executeWithReplacements(program, listOf(1 to noun, 2 to verb))[0] == 19_690_720
+        }
     }
-    println("Day 2 - Part 2 Solution")
+    val (noun, verb) = pair
+    println("Day 2 - Part 2 Solution took: $secondDuration")
     val result = 100 * noun + verb
     println("100 * $noun + $verb = $result")
 }
