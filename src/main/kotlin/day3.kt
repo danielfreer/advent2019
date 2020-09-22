@@ -9,6 +9,10 @@ fun main(vararg args: String) {
     val (distance, firstDuration) = measureTimedValue { findIntersection(paths) }
     println("Day 3 - Part 1 Solution took: $firstDuration")
     println("Manhattan distance: $distance")
+
+    val (steps, secondDuration) = measureTimedValue { findSteps(paths) }
+    println("Day 3 - Part 2 Solution took: $secondDuration")
+    println("Fewest combined steps: $steps")
 }
 
 data class Point(val x: Int, val y: Int)
@@ -35,13 +39,55 @@ private fun movement(direction: Char): (Point) -> Point {
     }
 }
 
+private fun calculatePointsTraveled(path: String): List<Point> {
+    val startingPoint = Point(x = 0, y = 0)
+    return path.split(",")
+        .flatMap {
+            val distance = it.drop(1).toInt()
+            val movement = it.first().let(::movement)
+            List(distance) {
+                movement
+            }
+        }
+        .runningFold(startingPoint) { point, move -> move(point) }
+}
+
+private fun ignoreStartingPoint(points: List<Point>) = points.drop(1)
+
 fun findIntersection(paths: List<String>): Int {
-    val intersections = paths.map { path ->
-        path.split(",")
-            .flatMap { movement -> List(movement.drop(1).toInt()) { movement.first().let(::movement) } }
-            .runningFold(Point(x = 0, y = 0)) { point, move -> move(point) }
-            .drop(1)
-            .toSet()
-    }.reduce { acc, set -> acc.intersect(set) }
+    val intersections = paths
+        .map(::calculatePointsTraveled)
+        .map(::ignoreStartingPoint)
+        .map { it.toSet() }
+        .reduce { acc, points -> acc.intersect(points) }
     return manhattanDistance(intersections)
+}
+
+fun findStepsToIntersections(paths: List<String>): List<Map<Point, Int>> {
+    val allPointsTraveled = paths
+        .map(::calculatePointsTraveled)
+    val intersections = allPointsTraveled
+        .map(::ignoreStartingPoint)
+        .map { it.toSet() }
+        .reduce { acc, points -> acc.intersect(points) }
+    return allPointsTraveled.map { pointsTraveled ->
+        intersections.associateWith { intersection -> pointsTraveled.indexOf(intersection) }
+    }
+}
+
+fun findSteps(paths: List<String>): Int {
+    val stepsToIntersections = findStepsToIntersections(paths)
+    val intersectionsToSteps = stepsToIntersections
+        .reduce { acc, map ->
+            val newMap = acc.toMutableMap()
+            map.forEach { (point, steps) ->
+                newMap.compute(point) { _, value ->
+                    value?.plus(steps) ?: steps
+                }
+            }
+            newMap
+        }
+    return intersectionsToSteps
+        .minByOrNull { it.value }
+        ?.value ?: throw IllegalArgumentException("Empty collection")
 }
