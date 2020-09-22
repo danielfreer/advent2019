@@ -1,22 +1,13 @@
 import kotlin.time.ExperimentalTime
-import kotlin.time.measureTimedValue
 
 @ExperimentalTime
-fun main(vararg args: String) {
-    val input = args.toList().ifEmpty { loadResource("day4.txt") }
+fun day4(input: List<String>): List<Solution> {
     val range = input.first().split("-").map(String::toInt).let { it.first()..it.last() }
 
-    val (numPossiblePasswords, firstDuration) = measureTimedValue {
-        possiblePasswords(range).size
-    }
-    println("Day 4 - Part 1 Solution took: $firstDuration")
-    println("Number of possible passwords: $numPossiblePasswords")
-
-    val (numPossiblePasswordsRedux, secondDuration) = measureTimedValue {
-        possiblePasswordsRedux(range).size
-    }
-    println("Day 4 - Part 2 Solution took: $secondDuration")
-    println("Number of possible passwords: $numPossiblePasswordsRedux")
+    return listOf(
+        solve(4, 1) { possiblePasswords(range).size },
+        solve(4, 2) { possiblePasswordsRedux(range).size }
+    )
 }
 
 private typealias Rule<T> = (T) -> Boolean

@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.4.10"
+    application
 }
 group = "dev.danielfreer"
 version = "1.0-SNAPSHOT"
@@ -19,4 +20,7 @@ tasks.withType<KotlinCompile> {
 }
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+application {
+    mainClassName = "MainKt"
 }

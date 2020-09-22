@@ -1,18 +1,13 @@
 import kotlin.time.ExperimentalTime
-import kotlin.time.measureTimedValue
 
 @ExperimentalTime
-fun main(vararg args: String) {
-    val input = args.toList().ifEmpty { loadResource("day1.txt") }
+fun day1(input: List<String>): List<Solution> {
     val modulesMass = input.map(String::toInt)
 
-    val (fuel, firstDuration) = measureTimedValue { sumFuelRequired(modulesMass) }
-    println("Day 1 - Part 1 Solution took: $firstDuration")
-    println("Sum of fuel required: $fuel")
-    println()
-    val (allFuel, secondDuration) = measureTimedValue { sumAllFuelRequired(modulesMass) }
-    println("Day 1 - Part 2 Solution took: $secondDuration")
-    println("Sum of all fuel required: $allFuel")
+    return listOf(
+        solve(1, 1) { sumFuelRequired(modulesMass) },
+        solve(1, 2) { sumAllFuelRequired(modulesMass) }
+    )
 }
 
 fun fuelRequired(mass: Int) = mass / 3 - 2

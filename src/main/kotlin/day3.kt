@@ -1,18 +1,12 @@
 import kotlin.math.absoluteValue
 import kotlin.time.ExperimentalTime
-import kotlin.time.measureTimedValue
 
 @ExperimentalTime
-fun main(vararg args: String) {
-    val paths = args.toList().ifEmpty { loadResource("day3.txt") }
-
-    val (distance, firstDuration) = measureTimedValue { findIntersection(paths) }
-    println("Day 3 - Part 1 Solution took: $firstDuration")
-    println("Manhattan distance: $distance")
-
-    val (steps, secondDuration) = measureTimedValue { findSteps(paths) }
-    println("Day 3 - Part 2 Solution took: $secondDuration")
-    println("Fewest combined steps: $steps")
+fun day3(paths: List<String>): List<Solution> {
+    return listOf(
+        solve(3, 1) { findIntersection(paths) },
+        solve(3, 2) { findSteps(paths) }
+    )
 }
 
 data class Point(val x: Int, val y: Int)

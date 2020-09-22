@@ -1,24 +1,13 @@
 import kotlin.time.ExperimentalTime
-import kotlin.time.measureTimedValue
 
 @ExperimentalTime
-fun main(vararg args: String) {
-    val input = args.toList().ifEmpty { loadResource("day2.txt") }
+fun day2(input: List<String>): List<Solution> {
     val program = input.flatMap { it.split(",") }.map(String::toInt)
 
-    val (finalState, firstDuration) = measureTimedValue { executeWithReplacements(program, listOf(1 to 12, 2 to 2)) }
-    println("Day 2 - Part 1 Solution took: $firstDuration")
-    println("Value at position 0: ${finalState[0]}")
-    println()
-    val (pair, secondDuration) = measureTimedValue {
-        calculateNounVerb { noun, verb ->
-            executeWithReplacements(program, listOf(1 to noun, 2 to verb))[0] == 19_690_720
-        }
-    }
-    val (noun, verb) = pair
-    println("Day 2 - Part 2 Solution took: $secondDuration")
-    val result = 100 * noun + verb
-    println("100 * $noun + $verb = $result")
+    return listOf(
+        solve(2, 1) { executeWithReplacements(program) },
+        solve(2, 2) { calculateNounVerb(program) }
+    )
 }
 
 private const val ADD = 1
@@ -42,18 +31,24 @@ private tailrec fun execute(state: MutableList<Int>, index: Int): List<Int> {
 
 fun execute(program: List<Int>) = execute(program.toMutableList(), 0)
 
-private fun executeWithReplacements(program: List<Int>, replacements: List<Pair<Int, Int>>): List<Int> {
-    val mutableProgram = program.toMutableList()
-    replacements.forEach { (index, value) ->
-        mutableProgram[index] = value
+private fun executeWithReplacements(program: List<Int>): Int {
+    val mutableProgram = program.toMutableList().apply {
+        this[1] = 12
+        this[2] = 2
     }
-    return execute(mutableProgram, 0)
+    return execute(mutableProgram, 0)[0]
 }
 
-private fun calculateNounVerb(condition: (Int, Int) -> Boolean): Pair<Int, Int> {
+private fun calculateNounVerb(program: List<Int>): Int {
     (0..99).forEach { noun ->
         (0..99).forEach { verb ->
-            if (condition(noun, verb)) return noun to verb
+            val mutableProgram = program.toMutableList().apply {
+                this[1] = noun
+                this[2] = verb
+            }
+            if (execute(mutableProgram, 0)[0] == 19_690_720) {
+                return 100 * noun + verb
+            }
         }
     }
     throw java.lang.IllegalStateException("Could not find noun/verb pair")
