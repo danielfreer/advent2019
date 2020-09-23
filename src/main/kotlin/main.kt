@@ -5,6 +5,7 @@ fun main() {
     listOf(
         day1(loadResource("day1.txt")),
         day2(loadResource("day2.txt")),
+        altDay2(loadResource("day2.txt")),
         day3(loadResource("day3.txt")),
         day4(loadResource("day4.txt")),
         day5(loadResource("day5.txt"))
