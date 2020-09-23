@@ -18,6 +18,7 @@ fun Memory.write(mode: Int?, address: Int, result: Int) = when (mode) {
     1 -> writeImmediate(address, result)
     else -> throw IllegalArgumentException("Unknown mode: $mode")
 }
+
 fun Memory.writePosition(address: Int, result: Int) = mapIndexed(transform(get(address), result))
 fun Memory.writeImmediate(address: Int, result: Int) = mapIndexed(transform(address, result))
 
