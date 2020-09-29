@@ -1,4 +1,3 @@
-import intcode.Program
 import kotlin.time.ExperimentalTime
 
 @ExperimentalTime
@@ -8,24 +7,6 @@ fun day2(input: List<String>): List<Solution> {
     return listOf(
         solve(2, 1) { executeWithReplacements(program) },
         solve(2, 2) { calculateNounVerb(program) }
-    )
-}
-
-@ExperimentalTime
-fun altDay2(input: List<String>): List<Solution> {
-    val memory = input.flatMap { it.split(",") }.map(String::toInt)
-
-    return listOf(
-        solve(2, 1) { intcode.execute(Program(memory, 0, null, null), 1 to 12, 2 to 2) },
-        solve(2, 2) {
-            (0..99).forEach { noun ->
-                (0..99).forEach { verb ->
-                    val result = intcode.execute(Program(memory, 0, null, null), 1 to noun, 2 to verb)
-                    if (result == 19_690_720) return@solve 100 * noun + verb
-                }
-            }
-            throw java.lang.IllegalStateException("Could not find noun/verb pair")
-        }
     )
 }
 
