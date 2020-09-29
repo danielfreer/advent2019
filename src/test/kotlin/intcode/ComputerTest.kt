@@ -2,7 +2,6 @@ package intcode
 
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldContainExactly
-import io.kotest.matchers.shouldBe
 
 class ComputerTest : DescribeSpec({
     data class Case(val memory: Memory, val expected: Memory)
@@ -25,19 +24,14 @@ class ComputerTest : DescribeSpec({
             memory(30, 1, 1, 4, 2, 5, 6, 0, 99)
         ),
         Case(
-            memory(1002, 4, 3, 4, 33),
-            memory(1002, 4, 3, 4, 99)
+            memory(1, 9, 10, 3, 2, 3, 11, 0, 99, 30, 40, 50),
+            memory(3500, 9, 10, 70, 2, 3, 11, 0, 99, 30, 40, 50)
         )
     )
     describe("execute") {
         cases.forEach { (memory, expected) ->
             it("when memory is $memory, should contain exactly $expected") {
                 execute(memory).shouldContainExactly(expected)
-            }
-        }
-        it("when memory is [3,0,4,0,99], output should be the same as input") {
-            (0..99).forEach { input ->
-                execute(memory(3, 0, 4, 0, 99), input).shouldBe(input)
             }
         }
     }

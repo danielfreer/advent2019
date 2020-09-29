@@ -50,6 +50,10 @@ private tailrec fun execute(program: Program): Program {
         Opcode.MULTIPLY -> execute(program.multiply())
         Opcode.WRITE -> execute(program.write())
         Opcode.READ -> execute(program.read())
+        Opcode.JUMP_IF_TRUE -> execute(program.jumpIf { it != 0 })
+        Opcode.JUMP_IF_FALSE -> execute(program.jumpIf { it == 0 })
+        Opcode.LESS_THAN -> execute(program.equality { first, second -> first < second })
+        Opcode.EQUALS -> execute(program.equality { first, second -> first == second })
         Opcode.HALT -> program
     }
 }
@@ -91,6 +95,28 @@ private fun Program.read(): Program {
     return copy(
         instructionPointer = instructionPointer + 2,
         output = output
+    )
+}
+
+private fun Program.jumpIf(condition: (Int) -> Boolean): Program {
+    val (firstParameterMode, secondParameterMode, _) = parameterModes()
+    val firstInput = memory.read(firstParameterMode, instructionPointer + 1)
+    val secondInput = memory.read(secondParameterMode, instructionPointer + 2)
+    return if (condition(firstInput)) {
+        copy(instructionPointer = secondInput)
+    } else {
+        copy(instructionPointer = instructionPointer + 3)
+    }
+}
+
+private fun Program.equality(condition: (Int, Int) -> Boolean): Program {
+    val (firstParameterMode, secondParameterMode, thirdParameterMode) = parameterModes()
+    val firstInput = memory.read(firstParameterMode, instructionPointer + 1)
+    val secondInput = memory.read(secondParameterMode, instructionPointer + 2)
+    val result = if (condition(firstInput, secondInput)) 1 else 0
+    return copy(
+        memory = memory.write(thirdParameterMode, instructionPointer + 3, result),
+        instructionPointer = instructionPointer + 4
     )
 }
 
