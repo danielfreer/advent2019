@@ -121,14 +121,14 @@ private fun Program.equality(condition: (Int, Int) -> Boolean): Program {
 }
 
 private fun Program.parameterModes(): Triple<ParameterMode, ParameterMode, ParameterMode> {
-    fun <T> List<T>.getOrElse(index: Int, defaultValue: T): T {
+    fun <T> List<T>.getOrDefault(index: Int, defaultValue: T): T {
         return if (index in 0..lastIndex) get(index) else defaultValue
     }
 
     val parameterModes = parameterModeDigits.map(ParameterMode::of)
-    val firstParameterMode = parameterModes.getOrElse(0, ParameterMode.POSITION)
-    val secondParameterMode = parameterModes.getOrElse(1, ParameterMode.POSITION)
-    val thirdParameterMode = parameterModes.getOrElse(2, ParameterMode.POSITION)
+    val firstParameterMode = parameterModes.getOrDefault(0, ParameterMode.POSITION)
+    val secondParameterMode = parameterModes.getOrDefault(1, ParameterMode.POSITION)
+    val thirdParameterMode = parameterModes.getOrDefault(2, ParameterMode.POSITION)
     return Triple(firstParameterMode, secondParameterMode, thirdParameterMode)
 }
 

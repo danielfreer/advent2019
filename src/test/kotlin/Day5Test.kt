@@ -6,14 +6,14 @@ class Day5Test : DescribeSpec({
     describe("opcode 3") {
         it("when memory is [3,0,4,0,99], output should be the same as input") {
             (0..99).forEach { input ->
-                intcode.execute(memory(3, 0, 4, 0, 99), input).shouldBe(input)
+                intcode.execute(listOf(3, 0, 4, 0, 99), input).shouldBe(input)
             }
         }
     }
     describe("parameter modes") {
         listOf(
-            memory(1002, 4, 3, 4, 33) to memory(1002, 4, 3, 4, 99),
-            memory(1101, 100, -1, 4, 0) to memory(1101, 100, -1, 4, 99)
+            listOf(1002, 4, 3, 4, 33) to listOf(1002, 4, 3, 4, 99),
+            listOf(1101, 100, -1, 4, 0) to listOf(1101, 100, -1, 4, 99)
         ).forEach { (memory, expected) ->
             it("when memory is $memory, should contain exactly $expected") {
                 intcode.execute(memory).shouldContainExactly(expected)
@@ -29,11 +29,11 @@ class Day5Test : DescribeSpec({
             val expected = if (equal) 1 else 0
             val condition = if (equal) " equal" else " not equal"
             it("using position mode, $input should $condition 8") {
-                val memory = memory(3, 9, 8, 9, 10, 9, 4, 9, 99, -1, 8)
+                val memory = listOf(3, 9, 8, 9, 10, 9, 4, 9, 99, -1, 8)
                 intcode.execute(memory, input).shouldBe(expected)
             }
             it("using immediate mode, $input should $condition 8") {
-                val memory = memory(3, 3, 1108, -1, 8, 3, 4, 3, 99)
+                val memory = listOf(3, 3, 1108, -1, 8, 3, 4, 3, 99)
                 intcode.execute(memory, input).shouldBe(expected)
             }
         }
@@ -47,11 +47,11 @@ class Day5Test : DescribeSpec({
             val expected = if (lessThan) 1 else 0
             val condition = if (lessThan) " be less than" else " not be less than"
             it("using position mode, $input should $condition 8") {
-                val memory = memory(3, 9, 7, 9, 10, 9, 4, 9, 99, -1, 8)
+                val memory = listOf(3, 9, 7, 9, 10, 9, 4, 9, 99, -1, 8)
                 intcode.execute(memory, input).shouldBe(expected)
             }
             it("using immediate mode, $input should $condition 8") {
-                val memory = memory(3, 3, 1107, -1, 8, 3, 4, 3, 99)
+                val memory = listOf(3, 3, 1107, -1, 8, 3, 4, 3, 99)
                 intcode.execute(memory, input).shouldBe(expected)
             }
         }
@@ -64,7 +64,7 @@ class Day5Test : DescribeSpec({
             val expected = if (equalsZero) 0 else 1
             val condition = if (equalsZero) " equal" else " not equal"
             it("using position mode, $input should $condition 0") {
-                val memory = memory(3, 12, 6, 12, 15, 1, 13, 14, 13, 4, 13, 99, -1, 0, 1, 9)
+                val memory = listOf(3, 12, 6, 12, 15, 1, 13, 14, 13, 4, 13, 99, -1, 0, 1, 9)
                 intcode.execute(memory, input).shouldBe(expected)
             }
         }
@@ -77,7 +77,7 @@ class Day5Test : DescribeSpec({
             val expected = if (equalsZero) 0 else 1
             val condition = if (equalsZero) " equal" else " not equal"
             it("using immediate mode, $input should $condition 0") {
-                val memory = memory(3, 3, 1105, -1, 9, 1101, 0, 0, 12, 4, 12, 99, 1)
+                val memory = listOf(3, 3, 1105, -1, 9, 1101, 0, 0, 12, 4, 12, 99, 1)
                 intcode.execute(memory, input).shouldBe(expected)
             }
         }
@@ -96,7 +96,7 @@ class Day5Test : DescribeSpec({
                 1001 -> " be greater than"
                 else -> throw IllegalArgumentException("Bad test input")
             }
-            val memory = memory(
+            val memory = listOf(
                 3, 21, 1008, 21, 8, 20, 1005, 20, 22, 107, 8, 21, 20, 1006, 20, 31,
                 1106, 0, 36, 98, 0, 0, 1002, 21, 125, 20, 4, 20, 1105, 1, 46, 104,
                 999, 1105, 1, 46, 1101, 1000, 1, 20, 4, 20, 1105, 1, 46, 98, 99
@@ -107,5 +107,3 @@ class Day5Test : DescribeSpec({
         }
     }
 })
-
-private fun memory(vararg values: Int) = values.toList()
