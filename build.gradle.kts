@@ -16,7 +16,7 @@ dependencies {
     testImplementation("io.kotest:kotest-assertions-core:4.2.5")
 }
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "13"
+    kotlinOptions.jvmTarget = "11"
 }
 tasks.withType<Test> {
     useJUnitPlatform()
